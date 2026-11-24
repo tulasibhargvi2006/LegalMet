@@ -157,15 +157,7 @@ def upload_file():
     'status': validation_result['status'],
     'timestamp': datetime.utcnow()
     })
-    # with app.app_context():
-    #     for doc in scans_col.find():
-    #         old = doc['image_path']
-    #         new = old.replace('static/', '').replace('\\', '/')
-    #         if not new.startswith('uploads/'):
-    #             new = 'uploads/' + new.lstrip('/')
-    #         scans_col.update_one({'_id': doc['_id']}, {'$set': {'image_path': new}})
-
-    # 5. Render result – pass the full path to display the image on the result page
+    
     return render_template('result.html',
                            image_path=filepath,   # full path used in <img src="{{ image_path }}"> (works because result.html serves it directly)
                            extracted_text=extracted_text,
@@ -239,48 +231,6 @@ def admin_users():
     users = list(users_col.find({}, {'password': 0}))  # exclude password
     return render_template('admin_users.html', users=users)
 
-# ---------- Admin: Reports ----------
-# @app.route('/admin/reports')
-# def admin_reports():
-#     if 'user_id' not in session or session.get('role') != 'admin':
-#         flash('Admin access only')
-#         return redirect(url_for('login'))
-
-#     # Get filter from query string
-#     status_filter = request.args.get('status', '').upper()
-#     query = {}
-#     if status_filter in ['COMPLIANT', 'NON-COMPLIANT']:
-#         query['status'] = status_filter
-
-#     # Fetch scans with user details using aggregation (pipeline)
-#     pipeline = [
-#         {'$match': query},
-#         {'$lookup': {
-#             'from': 'users',
-#             'localField': 'user_id',
-#             'foreignField': '_id',
-#             'as': 'user'
-#         }},
-#         {'$unwind': {'path': '$user', 'preserveNullAndEmptyArrays': True}},
-#         {'$project': {
-#             '_id': 1,
-#             'image_path': 1,
-#             'extracted_fields': 1,
-#             'violations': 1,
-#             'status': 1,
-#             'timestamp': 1,
-#             'user_full_name': '$user.full_name',
-#             'user_phone': '$user.phone'
-#         }},
-#         {'$sort': {'timestamp': -1}}
-#     ]
-#     scans = list(scans_col.aggregate(pipeline))
-
-#     # Convert ObjectId to string for template
-#     for s in scans:
-#         s['_id'] = str(s['_id'])
-
-#     return render_template('admin_reports.html', scans=scans, status_filter=status_filter)
 
 @app.route('/admin/reports')
 def admin_reports():
