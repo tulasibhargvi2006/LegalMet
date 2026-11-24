@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>LegalMet AI - Scan</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+<div class="container">
+    <header>
+        <h1>⚖️ LegalMet AI</h1>
+        <div class="user-info">Welcome, {{ session.full_name }} | <a href="{{ url_for('logout') }}">Logout</a></div>
+    </header>
+    <main>
+        <form method="POST" enctype="multipart/form-data" action="/upload">
+            <div class="upload-area">
+                <label for="file">Upload product image</label>
+                <input type="file" name="file" id="file" accept="image/*" required>
+            </div>
+            <button type="submit">🔍 Analyse Product</button>
+        </form>
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}<ul class="flash">{% for m in messages %}<li>{{ m }}</li>{% endfor %}</ul>{% endif %}
+        {% endwith %}
+    </main>
+</div>
+</body>
+</html>

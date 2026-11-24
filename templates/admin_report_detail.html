@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Report Detail - Admin</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+<div class="container">
+    <header>
+        <h1>🔍 Report Detail</h1>
+        <div><a href="{{ url_for('admin_reports') }}">← Back to Reports</a></div>
+    </header>
+    <main>
+        <!-- User Info -->
+        <h3>
+            User: 
+            {% if scan.user %}
+                {{ scan.user.full_name }} ({{ scan.user.phone }})
+            {% else %}
+                <span style="color: #888;">Unknown User</span>
+            {% endif %}
+        </h3>
+        <p><strong>Status:</strong> <span class="status-badge {{ scan.status.lower() }}">{{ scan.status }}</span></p>
+        <p><strong>Timestamp:</strong> {{ scan.timestamp.strftime('%Y-%m-%d %H:%M:%S') if scan.timestamp else '' }}</p>
+
+        <!-- Image -->
+        <p><strong>Image:</strong><br>
+            {% if scan.image_path %}
+                {% set clean_path = scan.image_path.replace('static/', '').replace('\\', '/') %}
+                <img src="{{ url_for('static', filename=clean_path) }}" 
+                     style="max-width:300px; border:1px solid #ccc; border-radius:4px;"
+                     alt="Product Image"
+                     onerror="this.style.display='none'; this.parentElement.innerHTML+='<span style=\'color:red;\'> Image not found.</span>';">
+            {% else %}
+                <span style="color:red;">No image saved.</span>
+            {% endif %}
+        </p>
+
+        <!-- Extracted Fields -->
+        <h4>Extracted Fields</h4>
+        <table>
+            <thead><tr><th>Field</th><th>Value</th></tr></thead>
+            <tbody>
+                {% if scan.extracted_fields %}
+                    {% for key, value in scan.extracted_fields.items() %}
+                    <tr>
+                        <td>{{ key.replace('_', ' ').title() }}</td>
+                        <td>{{ value or '—' }}</td>
+                    </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr><td colspan="2">No fields extracted.</td></tr>
+                {% endif %}
+            </tbody>
+        </table>
+
+        <!-- Violations -->
+        <h4>Violations</h4>
+        {% if scan.violations %}
+        <ul class="violations">
+            {% for v in scan.violations %}
+            <li><span class="severity {{ v.severity.lower() }}">{{ v.severity }}</span> {{ v.message }}</li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <p style="color: green;">✅ No violations detected.</p>
+        {% endif %}
+
+        <!-- Raw OCR Text -->
+        <h4>Raw OCR Text</h4>
+        <pre style="background: #f1f5f9; padding: 1rem; border-radius: 8px; white-space: pre-wrap; word-wrap: break-word; max-height: 400px; overflow-y: auto;">
+{{ scan.extracted_text or 'No OCR text available.' }}
+        </pre>
+    </main>
+</div>
+</body>
+</html>

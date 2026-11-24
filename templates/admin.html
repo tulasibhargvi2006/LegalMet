@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin - LegalMet AI</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+<div class="container">
+    <header>
+        <h1>⚖️ Admin Panel</h1>
+        <div>
+            <a href="{{ url_for('home') }}">Home</a> |
+            <a href="{{ url_for('logout') }}">Logout</a>
+        </div>
+    </header>
+    <nav class="admin-nav">
+        <a href="{{ url_for('admin_dashboard') }}" class="active">Dashboard</a>
+        <a href="{{ url_for('admin_users') }}">Users</a>
+        <a href="{{ url_for('admin_reports') }}">Reports</a>
+    </nav>
+    <main>
+        <h2>Dashboard</h2>
+        <div class="stats">
+            <div class="stat-card">👤 Users: {{ total_users }}</div>
+            <div class="stat-card">📊 Total Scans: {{ total_scans }}</div>
+            <div class="stat-card stat-green">✅ Compliant: {{ compliant_scans }}</div>
+            <div class="stat-card stat-red">❌ Non‑Compliant: {{ noncompliant_scans }}</div>
+        </div>
+
+        <h2>Rules Management</h2>
+        <a href="{{ url_for('admin_add_rule') }}"><button>+ Add New Rule</button></a>
+        <table>
+            <thead>
+                <tr><th>Field</th><th>Label</th><th>Required</th><th>Severity</th><th>Active</th><th>Actions</th></tr>
+            </thead>
+            <tbody>
+                {% for rule in rules %}
+                <tr>
+                    <td>{{ rule.field }}</td>
+                    <td>{{ rule.label }}</td>
+                    <td>{{ '✅' if rule.required else '❌' }}</td>
+                    <td>{{ rule.severity }}</td>
+                    <td>{{ '✅' if rule.active else '❌' }}</td>
+                    <td>
+                        <a href="{{ url_for('admin_edit_rule', field=rule.field) }}">Edit</a> |
+                        <a href="{{ url_for('admin_delete_rule', field=rule.field) }}" onclick="return confirm('Delete this rule?')">Delete</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </main>
+</div>
+</body>
+</html>

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Users - Admin</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+<div class="container">
+    <header>
+        <h1>👤 Registered Users</h1>
+        <div>
+            <a href="{{ url_for('admin_dashboard') }}">Dashboard</a> |
+            <a href="{{ url_for('logout') }}">Logout</a>
+        </div>
+    </header>
+    <nav class="admin-nav">
+        <a href="{{ url_for('admin_dashboard') }}">Dashboard</a>
+        <a href="{{ url_for('admin_users') }}" class="active">Users</a>
+        <a href="{{ url_for('admin_reports') }}">Reports</a>
+    </nav>
+    <main>
+        <h2>All Users</h2>
+        <table>
+            <thead>
+                <tr><th>Full Name</th><th>Phone</th><th>Role</th><th>Joined</th></tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                <tr>
+                    <td>{{ user.full_name }}</td>
+                    <td>{{ user.phone }}</td>
+                    <td>{{ user.role }}</td>
+                    <td>{{ user.created_at.strftime('%Y-%m-%d %H:%M') if user.created_at else '' }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </main>
+</div>
+</body>
+</html>

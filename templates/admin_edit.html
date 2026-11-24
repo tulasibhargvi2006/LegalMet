@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{% if rule %}Edit{% else %}Add{% endif %} Rule - LegalMet AI</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+<div class="container">
+    <h1>{% if rule %}Edit{% else %}Add{% endif %} Rule</h1>
+    <form method="POST">
+        <label>Field (unique key)</label>
+        <input type="text" name="field" value="{{ rule.field if rule else '' }}" {% if rule %}readonly{% endif %} required>
+        <label>Label (display name)</label>
+        <input type="text" name="label" value="{{ rule.label if rule else '' }}" required>
+        <label>Required</label>
+        <input type="checkbox" name="required" {% if rule and rule.required %}checked{% endif %}>
+        <label>Severity</label>
+        <select name="severity">
+            <option value="High" {% if rule and rule.severity=='High' %}selected{% endif %}>High</option>
+            <option value="Medium" {% if rule and rule.severity=='Medium' %}selected{% endif %}>Medium</option>
+            <option value="Low" {% if rule and rule.severity=='Low' %}selected{% endif %}>Low</option>
+        </select>
+        <label>Active</label>
+        <input type="checkbox" name="active" {% if rule and rule.active %}checked{% endif %}>
+        <button type="submit">Save</button>
+    </form>
+    <a href="{{ url_for('admin_dashboard') }}">Back to Admin</a>
+</div>
+</body>
+</html>

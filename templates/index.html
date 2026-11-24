@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LegalMet AI – Packaged Commodity Compliance Checker</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>⚖️ LegalMet AI</h1>
+            <p>AI‑based compliance checker for packaged commodities</p>
+        </header>
+        <main>
+            <form method="POST" enctype="multipart/form-data" action="/">
+                <div class="upload-area">
+                    <label for="file">Upload product image (front/back)</label>
+                    <input type="file" name="file" id="file" accept="image/*" required>
+                </div>
+                <button type="submit">🔍 Analyse Product</button>
+            </form>
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    <ul class="flash">
+                    {% for message in messages %}
+                        <li>{{ message }}</li>
+                    {% endfor %}
+                    </ul>
+                {% endif %}
+            {% endwith %}
+        </main>
+        <footer>
+            <p>For Ministry of Consumer Affairs, Food & Public Distribution – SIH 2026</p>
+        </footer>
+    </div>
+</body>
+</html>

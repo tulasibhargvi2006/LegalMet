@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Reports - Admin</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+<div class="container">
+    <header>
+        <h1>📊 Scan Reports</h1>
+        <div>
+            <a href="{{ url_for('admin_dashboard') }}">Dashboard</a> |
+            <a href="{{ url_for('logout') }}">Logout</a>
+        </div>
+    </header>
+    <nav class="admin-nav">
+        <a href="{{ url_for('admin_dashboard') }}">Dashboard</a>
+        <a href="{{ url_for('admin_users') }}">Users</a>
+        <a href="{{ url_for('admin_reports') }}" class="active">Reports</a>
+    </nav>
+    <main>
+        <h2>Filter by Status</h2>
+        <div class="filter-links">
+            <a href="{{ url_for('admin_reports') }}" class="{% if not status_filter %}active-filter{% endif %}">All</a>
+            <a href="{{ url_for('admin_reports', status='COMPLIANT') }}" class="{% if status_filter == 'COMPLIANT' %}active-filter{% endif %}">✅ Compliant</a>
+            <a href="{{ url_for('admin_reports', status='NON-COMPLIANT') }}" class="{% if status_filter == 'NON-COMPLIANT' %}active-filter{% endif %}">❌ Non‑Compliant</a>
+        </div>
+
+        <table>
+            <thead>
+                <tr><th>User</th><th>Product</th><th>Status</th><th>Violations</th><th>Date</th><th>View</th></tr>
+            </thead>
+            <tbody>
+                {% for scan in scans %}
+                <tr>
+                    <td>{{ scan.user_full_name or 'Unknown' }}<br><small>{{ scan.user_phone or '' }}</small></td>
+                    <td>{{ scan.extracted_fields.get('product_name', 'N/A') }}</td>
+                    <td><span class="status-badge {{ scan.status.lower() }}">{{ scan.status }}</span></td>
+                    <td>{{ scan.violations|length }}</td>
+                    <td>{{ scan.timestamp.strftime('%Y-%m-%d %H:%M') if scan.timestamp else '' }}</td>
+                    <td><a href="{{ url_for('admin_report_detail', scan_id=scan._id) }}">Details</a></td>
+                </tr>
+                {% else %}
+                <tr><td colspan="6">No scans found.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </main>
+</div>
+</body>
+</html>
